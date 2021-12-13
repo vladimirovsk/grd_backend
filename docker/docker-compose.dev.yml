@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+
+  # Mongo express app
+  mongo-express:
+    image: mongo-express
+    container_name: grd_mongo_db_debug
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=qwerty
+      - ME_CONFIG_MONGODB_AUTH_USERNAME=$MONGO_USERNAME
+      - ME_CONFIG_MONGODB_AUTH_PASSWORD=$MONGO_PASSWORD
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=$MONGO_DB
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=$MONGO_ROOT_USERNAME
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=$MONGO_PASSWORD
+      - ME_CONFIG_MONGODB_SERVER=grd_contract_database
+    networks:
+      - grand_base
+
+  #Start server with nodemon in dev mode
+  server:
+    command: /code/node_modules/.bin/nodemon /code/node_modules/.bin/babel-node index.js

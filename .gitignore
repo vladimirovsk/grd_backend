@@ -1,0 +1,6 @@
+node_modules
+.env
+.env.testing
+config/ethereum/contract.abi.json
+config/ethereum/wallet.json
+config/ethereum/nonce

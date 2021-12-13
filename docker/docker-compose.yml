@@ -1,0 +1,42 @@
+version: '3.3'
+
+networks:
+  grand_base:
+    driver: bridge
+
+services:
+
+  server:
+    container_name: grd_contract_server
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./docker/app/Dockerfile
+    ports:
+      - ${DOCKER_SERVER_PORT}:${APP_PORT}
+    volumes:
+      - ./../:/code
+      - ./../node_modules:/code/node_modules
+    command: /code/node_modules/.bin/babel-node index.js
+    networks:
+      - grand_base
+
+  database:
+    image: mongo:4.4.1-bionic
+    container_name: grd_contract_database
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+      - MONGO_INITDB_DATABASE=$MONGO_DB
+    volumes:
+      - dbdata:/data/db
+      - ./mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    networks:
+      - grand_base
+    ports:
+      - 27017-27019:27017-27019
+
+volumes:
+  dbdata:
+  node_modules:
